@@ -8,7 +8,6 @@ import 'package:flutter_rick_and_morty/presentation/cubits/personajes_cubit.dart
 import 'package:flutter_rick_and_morty/presentation/pages/home_page.dart';
 
 
-// TODO: Terminar estructura de la data ( datasources, repositories ) - domain/usecases
 void main() {
   final Dio dio = Dio();
   final characterRemoteDataSource = CharacterRemoteDataSource(dio);
