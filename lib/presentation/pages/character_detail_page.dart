@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rick_and_morty/domain/entities/character.dart';
 import 'package:flutter_rick_and_morty/presentation/cubits/detalle_personaje_cubit.dart';
+import 'package:flutter_rick_and_morty/presentation/cubits/detalle_personaje_state.dart';
 
 class CharacterDetailPage extends StatelessWidget {
   final Character character;
