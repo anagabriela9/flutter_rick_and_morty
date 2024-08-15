@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rick_and_morty/presentation/cubits/personajes_cubit.dart';
 import 'package:flutter_rick_and_morty/presentation/pages/character_detail_page.dart';
+import 'package:flutter_rick_and_morty/domain/entities/character.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,8 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String searchQuery = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,9 +23,6 @@ class _HomePageState extends State<HomePage> {
                 context: context,
                 delegate: CharacterSearchDelegate(
                   onSearch: (query) {
-                    setState(() {
-                      searchQuery = query;
-                    });
                     context.read<PersonajesCubit>().fetchCharacters(query);
                   },
                 ),
@@ -82,6 +78,7 @@ class CharacterSearchDelegate extends SearchDelegate {
         icon: const Icon(Icons.clear),
         onPressed: () {
           query = '';
+          showSuggestions(context);
         },
       ),
     ];
@@ -99,8 +96,44 @@ class CharacterSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    // Realiza la búsqueda directamente en el Cubit
     onSearch(query);
-    return Container(); // La lógica para mostrar resultados ya está en el Cubit
+
+    return BlocBuilder<PersonajesCubit, PersonajesState>(
+      builder: (context, state) {
+        if (state is PersonajesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is PersonajesLoaded) {
+          if (state.characters.isEmpty) {
+            return const Center(child: Text('No characters found.'));
+          }
+
+          return ListView.builder(
+            itemCount: state.characters.length,
+            itemBuilder: (context, index) {
+              final character = state.characters[index];
+              return ListTile(
+                leading: Image.network(character.image),
+                title: Text(character.name),
+                subtitle: Text('${character.species} - ${character.status}'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CharacterDetailPage(character: character),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        } else if (state is PersonajesError) {
+          return Center(child: Text(state.message));
+        } else {
+          return const Center(child: Text('No characters found.'));
+        }
+      },
+    );
   }
 
   @override

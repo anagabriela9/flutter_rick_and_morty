@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (_) => PersonajesCubit(getCharacters)..fetchCharacters(''),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Rick and Morty',
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(color: Colors.grey[900]),
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             headlineSmall: TextStyle(color: Colors.white),
             bodyLarge: TextStyle(color: Colors.white70),
             bodyMedium: TextStyle(color: Colors.white54),
